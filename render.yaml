@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: online-condition-record
+    runtime: node
+    plan: starter
+    buildCommand: npm install && npm run db:init
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_SSL
+        value: "false"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: online-condition-db
+          property: connectionString
+
+databases:
+  - name: online-condition-db
+    plan: basic-256mb

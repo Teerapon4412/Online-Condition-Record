@@ -5,7 +5,7 @@
   "description": "Standalone online condition recording system with Node.js, Express and PostgreSQL",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node scripts/init-db.js && node server.js",
     "dev": "node server.js",
     "db:init": "node scripts/init-db.js"
   },

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Condition Record</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <small>Factory Condition System</small>
+      <h1>ระบบบันทึก Condition ออนไลน์</h1>
+      <p>Model → Part → Condition Record → PostgreSQL → History / View Detail</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>ข้อมูลการบันทึก</h2>
+          <div class="muted">เลือก Model และ Part ที่ต้องการบันทึก Condition</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label>Model</label>
+          <select id="modelSelect"><option value="">กำลังโหลด...</option></select>
+        </div>
+
+        <div class="field">
+          <label>Part</label>
+          <select id="partSelect" disabled><option value="">เลือก Model ก่อน</option></select>
+        </div>
+
+        <div class="field">
+          <label>Machine</label>
+          <input id="machineCode" type="text" placeholder="เช่น MC16" />
+        </div>
+
+        <div class="field">
+          <label>วันที่บันทึก</label>
+          <input id="recordDate" type="date" />
+        </div>
+
+        <div class="field">
+          <label>Shift</label>
+          <select id="shift">
+            <option value="">-</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="Night">Night</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>ผู้บันทึก</label>
+          <input id="recorderName" type="text" placeholder="ชื่อผู้บันทึก" />
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Condition Record Sheet</h2>
+          <div id="templateInfo" class="muted">เลือก Model และ Part เพื่อโหลด Condition</div>
+        </div>
+        <span id="itemCount" class="count-chip">0 รายการ</span>
+      </div>
+
+      <div class="validation-summary" id="validationSummary">
+        <div class="validation-chip neutral">ยังไม่ได้ตรวจสอบ</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ลำดับ</th>
+              <th>กลุ่ม Condition</th>
+              <th>จุดตรวจ / หัวข้อ</th>
+              <th>ค่ามาตรฐาน</th>
+              <th>ค่าที่ตรวจพบ</th>
+              <th>ผลตรวจสอบ</th>
+            </tr>
+          </thead>
+          <tbody id="conditionRows">
+            <tr><td colspan="6" class="empty">ยังไม่ได้เลือก Part</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="actions">
+        <button id="saveBtn" class="btn btn-primary" type="button" disabled>บันทึก Condition</button>
+        <button id="clearBtn" class="btn btn-secondary" type="button">ล้างค่าที่กรอก</button>
+      </div>
+
+      <div id="message" class="message"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Condition History</h2>
+          <div class="muted">ค้นหาและเปิดดู Condition ที่บันทึกไว้ย้อนหลัง</div>
+        </div>
+        <button id="reloadHistoryBtn" class="btn btn-secondary" type="button">Reload</button>
+      </div>
+
+      <div class="history-filter">
+        <select id="historyModel"><option value="">ทุก Model</option></select>
+        <select id="historyPart"><option value="">ทุก Part</option></select>
+        <input id="dateFrom" type="date" title="ตั้งแต่วันที่" />
+        <input id="dateTo" type="date" title="ถึงวันที่" />
+        <input id="historySearch" type="search" placeholder="ค้นหา Model / Part / ผู้บันทึก..." />
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>วันที่ / เวลา</th>
+              <th>Record No.</th>
+              <th>Model</th>
+              <th>Part</th>
+              <th>Machine</th>
+              <th>Shift</th>
+              <th>ผู้บันทึก</th>
+              <th>Condition</th>
+              <th>View</th>
+            </tr>
+          </thead>
+          <tbody id="historyRows">
+            <tr><td colspan="9" class="empty">กำลังโหลด History...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="detailDialog">
+    <div class="modal-head">
+      <div>
+        <strong>Condition Record Detail</strong>
+        <div id="detailTitle" class="muted"></div>
+      </div>
+      <button id="closeDetailBtn" class="btn btn-secondary" type="button">ปิด</button>
+    </div>
+
+    <div class="modal-body">
+      <div id="detailMeta" class="record-meta"></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ลำดับ</th>
+              <th>กลุ่ม Condition</th>
+              <th>หัวข้อ</th>
+              <th>ค่ามาตรฐาน</th>
+              <th>ค่าที่บันทึก</th>
+              <th>ผลตรวจสอบ</th>
+            </tr>
+          </thead>
+          <tbody id="detailRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="/app.js"></script>
+</body>
+</html>

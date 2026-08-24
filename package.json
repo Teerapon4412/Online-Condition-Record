@@ -1,0 +1,17 @@
+{
+  "name": "online-condition-record",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone online condition recording system with Node.js, Express and PostgreSQL",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "db:init": "node scripts/init-db.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}
